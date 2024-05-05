@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 
-# Conexión a la base de datos MongoDB
 client = MongoClient('localhost', 27017)
 db = client.movies
 
@@ -30,12 +29,15 @@ def update_movie():
     else:
         print("No se encontró ninguna película con ese título.")
 
-def find_movie():
-    year = input("Ingrese el año de lanzamiento de la película que desea buscar: ")
-    movies = db.movies.find({"year": year})
-    print("Películas encontradas:")
-    for movie in movies:
-        print(movie)
+def consultar_por_año():
+    año = input("Introduce el año de la película que deseas consultar: ")
+    peliculas = list(db.movies.find({"year": año}, {"_id": 0, "title": 1}))
+    if not peliculas:
+        print("No se encontraron películas para el año especificado.")
+    else:
+        print(f"Películas lanzadas en {año}:")
+        for pelicula in peliculas:
+            print(pelicula['title'])
 
 while True:
     print("\nMenú:")
@@ -54,7 +56,7 @@ while True:
     elif choice == "3":
         update_movie()
     elif choice == "4":
-        find_movie()
+        consultar_por_año()
     elif choice == "5":
         print("¡Hasta luego!")
         break
